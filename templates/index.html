@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Flask</title>
+</head>
+<body>
+    <p>Hello world</p>
+    <form action="{{ url_for('on') }}">
+        <input type="submit" value="ON" />
+    </form>
+    <br/>
+    <form action="{{ url_for('off') }}">
+        <input type="submit" value="OFF" />
+    </form>
+    <br/>
+    <form action="{{ url_for('timerForm') }}" method="post">
+        <label type="text" >Timer :</label>
+        <input type="text" name="timer"  />
+        <input type="submit" value="timer" />
+    </form>
+    <br/>
+    <form action="{{ url_for('cronform') }}" method="post">
+        <label type="text" >Cron :</label>
+        <input type="text" name="cron"  />
+        <label type="text" >Timeout :</label>
+        <input type="text" name="timeout"  />
+        <input type="submit" value="cron" />
+    </form>
+    <br/>
+    <form action="{{ url_for('show_data_list') }}">
+        <input type="submit" value="List" />
+    </form>
+    <br/>
+    <form action="{{ url_for('delete') }}" method="post">
+        <input type="submit" value="Delete" />
+    </form>
+    <br/>
+</body>
+</html>
