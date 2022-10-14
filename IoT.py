@@ -3,18 +3,83 @@ import network
 import time
 import urequests
 from machine import Pin ,Timer
-from utime import sleep
+import utime
 import ujson
 import ntptime
 import re
 
+# simulation
+def getInfo():
+    return dataList[0]
+
+def delete():
+    if len(dataList) != 1:
+        dataList.pop(0)
+    else:
+        dataList[0 ]= firstData
+    return dataList
+
+def setTimer(timeout):
+    data = {
+        "message": "timer",
+        "timeout": int(timeout),
+        "cron": None,
+    }
+    data2 = {
+        "message": "on",
+        "timeout": 0,
+        "cron": None,
+    }
+    if len(dataList) != 1:
+        dataList[0] = data
+
+    else:
+        dataList.insert(0, data)
+    dataList[1] = data2
+    return data
+
+def setCron(cron, timeout):
+    data = {
+        "message": "cron",
+        "timeout": int(timeout),
+        "cron": cron,
+    }
+    data2 = {
+        "message": "off",
+        "timeout": 0,
+        "cron": None,
+    }
+    if len(dataList) != 1:
+        dataList[0] = data
+
+    else:
+        dataList.insert(0, data)
+    dataList[1] = data2
+    return data
+
+def on():
+    data = {
+        "message": "on",
+        "timeout": 0,
+        "cron": None,
+    }
+    dataList[0] = data
+    return data
+
+def off():
+    data = {
+        "message": "off",
+        "timeout": 0,
+        "cron": None,
+    }
+    dataList[0] = data
+    return data
 
 # ubah cron jadi total sec
 def cronsim(cron):
     # secs, mins, hours, dayweeks = cron.split(" ")
     cronSplit = cron.split(" ")
     time_in_sec = [1, 60, 6 0 *60, 6 0 *6 0 *24]
-    # print(cronSplit)
     i = 0
     total_sec = 0
     isStar = False
@@ -30,65 +95,39 @@ def cronsim(cron):
             total_sec += int(c) * time_in_sec[i]
             isNum = True i+=1
 
-    ret urn total_sec
+    r eturn total_sec
 
 
+# Initialize
 ntptime.host = "3.id.pool.ntp.org"
-SECONDS = 1000
 
-# tim0 = Timer(0)
-# Timer(2).init(period=1000, mode=Timer.ONE_SHOT, callback=lambda t:(led_red.off(),print("merah nyala")))
-
-# tim1 = Timer(1)
-# tim1.init(period=2000, mode=Timer.PERIODIC, callback=lambda t:print(1))
-
-# tim2 = Timer(2)
-# tim2.init(period=2000, mode=Timer.PERIODIC, callback=lambda t:led_red.on())
-
-url = "http://jsonplaceholder.typicode.com/posts/1"
-# url = "http://127.0.0.1:5000/info"
+url = "https://flaskrelayiot.alzifoztran.repl.co/info"
 
 data = {
-    "message": "", # str  "timeout": 1, # seconds  "cron": None, # str
+    "message": "", # str
+    "timeout": 1, # secon  s
+    "cron": None, # str
 }
 
+dataList = []
 
-led_red  = Pin(26,
+firstData = {
+    "message": "off",
+    "timeout": 0,
+    "cron": None,
+}
 
-Pin.OUT)
+dataList.append(firstData)
+
+led_red = Pin(26, Pin.OUT)
 led_green = Pin(19, Pin.OUT)
 led_blue = Pin(5, Pin.OUT)
 
-def changeM(data
+SECONDS = 500
 
+# print(time.localtime())
 
-,msg,timeout=0, cron =None):
-    data['message'] = msg
-    data['timeout'] = timeout
-    data['cron'] = cron
-
-# delete req
-
-
-st
-def resetM():
-    return {
-        "message": "", # str  "timeout": 1, # seconds
-        "cr  n": None, # str
-    }
-
-# print(  ime.localti
-
-
-())
-
-# Timer(3).init(period=2000, mode=Timer.PERIODIC, callback=lambda t:changeM("on"))
-Timer(4).init(period=60000, mode=Timer.PERIODIC, callback=lambda t:changeM(data,"cron", 5 000, "4 * * *  *"))
-# changeM("timer", 3000)
-# led_blue.on()
-# led_red.on()
-# Timer(1).init(period=2000, mode=Timer.PERIODIC, callback=lambda t:led_green.on())
-# Timer(2).init(period=7000, mode=Timer.PERIODIC, callback=lambda t:led_green.off())
+# Setup
 print("Connecting to WiFi", end="")
 sta_if = network.WLAN(network.STA_IF)
 sta_if.active(True)
@@ -99,27 +138,35 @@ while not sta_if.isconnected():
 print(" Connected!")
 
 ntptime.settime()
-UTC_OFFSET = 8 * 60 * 60  # timezone +8
-actua  ime = time.localtime(time.time() + UTC_OFFSET)
+UTC_OFFSET = 8 * 60 * 60  # tim  ne +8
+actual_time = time.localtime(time.time() + UTC_OFFSET)
+
+# tes
 
 
-res = urequests.get( \
+/off
+# Timer(1).init(period=3*SECONDS, mode=Timer.ONE_SHOT, callback=lambda t:(on(), print("on")))
+# Timer(2).init(period=7*SECONDS, mode=Timer.ONE_SHOT, callback=lambda t:(off(), print("of")))
 
-url)
-parse = res.json()
-prev_data = {}
 
-while True:
+# tes timer
+# setTimer(5 * SECONDS)
+
+# tes cron
+# setCron("5 * * *", 5 * SECONDS)
+
+
+def run():
     actual_time = time.localtime(time.time() + UTC_OFFSET)
+    print("send request")
     res = urequests.get(url)
     parse = res.json()
-    print(parse)
-    # parse = data
+    # res = getInfo()
+    # parse = res
     message = parse['message']
-    print("berhasil get", parse['message'],actual_time[3],".", actual_time[4], ".", actual_time[5], "me ssage", message)
+    print("berhasil get", parse['message'],actual_t ime[3],".",actu al_t ime[4],".",actu al_t ime[5], "message", message)
 
-    if m \
-          ssage == "on":
+    if message == "on":
         led_red.on()
         print("relay on")
     elif message == "off":
@@ -128,7 +175,6 @@ while True:
     elif message == "timer":
         led_blue.on()
         led_red.on()
-        isTimer = True
         timeout = parse['timeout']
         print("timer set")
 
@@ -136,12 +182,14 @@ while True:
             period=timeout,
             mode=Timer.ONE_SHOT,
             callback=lambda t:(
-                l ed_red.off(),
+                led_red.off(),
+                # off(),
                 led_blue.off(),
                 print("timer timeout, relay off")
             )
         )
-        data = resetM()
+        urequests.post("https://flaskrelayiot.alzifoztran.repl.co/delete")
+        # delete()
 
     # * * * *               secs, mins, hours, dayweeks
     elif message == "cron":
@@ -150,12 +198,36 @@ while True:
         timeout = parse['timeout']
         startCron = cronsim(parse['cron'])*1000
 
-        time r Start = Timer(1)
-        timerStop = Timer(2).init(period=timeout, mode=Timer.ONE_SHOT, callback=lambda t:(
-                                  led_red.on(), pri nt("cron stopped, relay off")))
+        timerStart = Timer(1)
+        timerStop = Timer(2).init(
+            period=timeout,
+            mode=Timer.ONE_SHOT,
+            callback=lambda t:(
+                led_red.off(),
+                # off(),
+                print("cron stopped, relay off")
+            )
+        )
 
-        timerStart.init(period=startCron, mode=Timer.PERIODIC, callback=lambda t:
-                        (led_red.on(), pr int("cron started, relay on"), timerStop))
-        data = resetM()
+        timerStart.init(
+            period=startCron,
+            mode=Timer.PERIODIC,
+            callback=lambda t:(
+                led_red.on(),
+                print("cron started, relay on"),
+                timerStop
+            )
+        )
+        urequests.post("https://flaskrelayiot.alzifoztran.repl.co/delete")
+        # delete()
+
+
+
+# LOOP
+
+
+Timer(10).init(period=500, mode=Timer.PERIODIC, callback=lambda t:(run() ))
+
+while True:
+    run()
     time.sleep(1)
-
