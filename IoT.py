@@ -101,7 +101,7 @@ def cronsim(cron):
 # Initialize
 ntptime.host = "3.id.pool.ntp.org"
 
-url = "https://flaskrelayiot.alzifoztran.repl.co/info"
+url = "https://alzifoztran.pythonanywhere.com/"
 
 data = {
     "message": "", # str
